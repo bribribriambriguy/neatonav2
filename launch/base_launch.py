@@ -5,8 +5,7 @@ import os
 
 def generate_launch_description():
     #pkg_share = launch_ros.substitutions.FindPackageShare(package='sam_bot_description').find('sam_bot_description')
-    default_model_path = os.path.join('../../botvac_node', 'urdf/neato.urdf')
-    default_rviz_path = os.path.join('neato', 'rviz/base.rviz')
+    default_model_path = 'urdf/neato.urdf'
     
     with open(default_model_path, 'r') as infp:
         robot_desc = infp.read()
@@ -24,7 +23,6 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         output='screen',
-        arguments=['-d'+default_rviz_path]
     )
     neato_node = launch_ros.actions.Node(
         package='neato',
