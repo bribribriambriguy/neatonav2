@@ -5,7 +5,7 @@ import os
 
 def generate_launch_description():
     #pkg_share = launch_ros.substitutions.FindPackageShare(package='sam_bot_description').find('sam_bot_description')
-    default_model_path = 'src/neato/urdf/neato.urdf'
+    default_model_path = 'src/neatonav2/urdf/neato.urdf'
     
     with open(default_model_path, 'r') as infp:
         robot_desc = infp.read()

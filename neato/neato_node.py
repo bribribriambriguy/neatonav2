@@ -46,7 +46,7 @@ class neato_node(rclpy.node.Node):
 		if self.useLaser:
 			self.init_laser()
    
-		self.cmd_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_callback, 5)
+		self.cmd_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_callback, 1)
 	
 	def init_odom(self):
 		self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
