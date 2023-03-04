@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 from glob import glob
 
-package_name = 'neato'
+package_name = 'neatonav2'
 
 setup(
     name=package_name,
@@ -23,8 +23,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-                'neato_node = neato.neato_node:main',
-                'neato_driver = neato.neato_driver:main'
+                'neato_node = neatonav2.neato_node:main',
+                'neato_driver = neatonav2.neato_driver:main'
         ],
         
     },
