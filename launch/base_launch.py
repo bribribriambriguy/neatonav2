@@ -25,7 +25,7 @@ def generate_launch_description():
         output='screen',
     )
     neato_node = launch_ros.actions.Node(
-        package='neato',
+        package='neatonav2',
         executable='neato_node',
         name='neato_node',
         parameters=[{'laser_frame':'sensor_laser'}]
