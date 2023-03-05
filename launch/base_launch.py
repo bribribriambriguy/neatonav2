@@ -9,8 +9,6 @@ def generate_launch_description():
     
     with open(default_model_path, 'r') as infp:
         robot_desc = infp.read()
-            
-    #default_rviz_config_path = os.path.join(pkg_share, 'rviz/urdf_config.rviz')
 
     robot_state_publisher_node = launch_ros.actions.Node(
         package='robot_state_publisher',
@@ -18,12 +16,7 @@ def generate_launch_description():
         parameters=[{'robot_description': robot_desc}],
         output='both'
     )
-    rviz_node = launch_ros.actions.Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-    )
+    
     neato_node = launch_ros.actions.Node(
         package='neatonav2',
         executable='neato_node',
@@ -31,17 +24,7 @@ def generate_launch_description():
         parameters=[{'laser_frame':'sensor_laser'}]
     )
 
-    return launch.LaunchDescription([
-        launch.actions.DeclareLaunchArgument(name='gui', default_value='True',
-                                            description='Flag to enable joint_state_publisher_gui'),
-        launch.actions.DeclareLaunchArgument(name='model', default_value=default_model_path,
-                                            description='Absolute path to robot urdf file'),
-        launch.actions.DeclareLaunchArgument(name='laser_frame', default_value=default_model_path,
-                                            description='Absolute path to robot urdf file'),
-        #launch.actions.DeclareLaunchArgument(name='rvizconfig', default_value=default_rviz_config_path,
-                                            #description='Absolute path to rviz config file'),
-        
+    return launch.LaunchDescription([       
         robot_state_publisher_node,
-        rviz_node,
         neato_node
     ])
