@@ -26,7 +26,7 @@
       <color rgba=".5 .5 .5 1" />
    </material>
    <link name="base_link" />
-   <link name="body">
+   <link name="base_footprint">
       <visual>
          <!--actual: <origin xyz="0 .060 0" rpy="0 0 0" /> -->
          <origin xyz="0 ${-bodyRadius/2} 0" rpy="0 0 0" />
@@ -43,9 +43,9 @@
          <material name="black" />
       </visual>
    </link>
-   <joint name="body_joint" type="fixed">
-      <origin xyz="0 0 ${bodyHeight/2}" rpy="0 0 ${pi/2}" />
-      <child link="body" />
+   <joint name="base_footprint_joint" type="fixed">
+      <origin xyz="0 0 ${bodyHeight/2}" rpy="0 0 0" />
+      <child link="base_footprint" />
       <parent link="base_link" />
    </joint>
    <link name="sensor_laser">

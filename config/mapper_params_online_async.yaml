@@ -44,7 +44,7 @@ slam_toolbox:
 
     # map_start_pose: [0.0, 0.0, 0.0]
 
-    map_start_at_dock: true
+    #map_start_at_dock: true
 
 
 
