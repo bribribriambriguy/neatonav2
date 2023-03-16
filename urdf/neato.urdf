@@ -14,7 +14,7 @@
   <link name="base_footprint">
     <visual>
       <!--actual: <origin xyz="0 .060 0" rpy="0 0 0" /> -->
-      <origin rpy="0 0 0" xyz="0 -0.0825 0"/>
+      <origin rpy="0 0 -1.5708" xyz="0.0825 0 0"/>
       <geometry>
         <!--actual: <box size="0.330 0.135 0.074"/> -->
         <box size="0.33 0.165 0.074"/>
@@ -26,9 +26,10 @@
         <cylinder length="0.074" radius="0.165"/>
       </geometry>
       <material name="black"/>
+      <!-- origin xyz="0 0 0" rpy="0 0 1.5708" /-->
     </visual>
   </link>
-  <joint name="base_footprint_joint" type="fixed">
+  <joint name="body_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0.037"/>
     <child link="base_footprint"/>
     <parent link="base_link"/>
