@@ -40,8 +40,8 @@ class neato_node(rclpy.node.Node):
 		self.y = 0
 		self.th  = 0
 		self.moving_prev = 0
-		self.useOdom = self.get_parameter('enable_odom').get_parameter_value()
-		self.useLaser = self.get_parameter('enable_scan').get_parameter_value()
+		self.useOdom = self.get_parameter('enable_odom').get_parameter_value().bool_value
+		self.useLaser = self.get_parameter('enable_scan').get_parameter_value().bool_value
 		self.delta_left_wheel = 0
 		self.delta_right_wheel = 0
 		self.cmd_vel = None
