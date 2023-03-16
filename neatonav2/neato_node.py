@@ -8,8 +8,6 @@ from .neato_driver import *
 import serial
 import math
 import numpy as np
-import time
-import sys
 
 class neato_node(rclpy.node.Node):
 
