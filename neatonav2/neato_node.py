@@ -5,9 +5,11 @@ from tf2_ros.transform_broadcaster import TransformBroadcaster
 from geometry_msgs.msg import TransformStamped, Twist
 from sensor_msgs.msg import LaserScan
 from .neato_driver import *
+import serial
 import math
 import numpy as np
 import time
+import sys
 
 class neato_node(rclpy.node.Node):
 
@@ -23,6 +25,16 @@ class neato_node(rclpy.node.Node):
 		self.declare_parameter('max_z_speed', 0) # unlimited
 		self.declare_parameter('enable_odom', True)
 		self.declare_parameter('enable_scan', True)
+  
+		self.get_logger().info('base_frame: '+ self.get_parameter('base_frame').get_parameter_value()._string_value)
+		self.get_logger().info('odom_frame: '+ self.get_parameter('odom_frame').get_parameter_value()._string_value)
+		self.get_logger().info('laser_frame: '+ self.get_parameter('laser_frame').get_parameter_value()._string_value)
+		self.get_logger().info('neato_port: ' + self.get_parameter('neato_port').get_parameter_value()._string_value)
+		self.get_logger().info('wheel_track: '+ str(self.get_parameter('wheel_track').get_parameter_value()._double_value))
+		self.get_logger().info('max_x_speed: '+ str(self.get_parameter('max_x_speed').get_parameter_value()._double_value))
+		self.get_logger().info('max_z_speed: '+ str(self.get_parameter('max_z_speed').get_parameter_value()._double_value))
+		self.get_logger().info('enable_odom: '+ str(self.get_parameter('enable_odom').get_parameter_value().bool_value))
+		self.get_logger().info('enable_scan: '+ str(self.get_parameter('enable_scan').get_parameter_value().bool_value))
   
 		self.left_wheel_pos_prev = 0
 		self.right_wheel_pos_prev = 0
@@ -66,13 +78,18 @@ class neato_node(rclpy.node.Node):
 		self.scan.range_max = 6.0
   
 	def start_neato(self):
-		init(self.get_parameter("neato_port").get_parameter_value().string_value,False)
-		TestMode(True)
-		SetLED(BacklightStatus.On, ButtonColors.Green)
-		PlaySound(Sounds.WakingUp)
+		try:	
+			port = self.get_parameter("neato_port").get_parameter_value().string_value
+			init(port,False)
+			self.get_logger().info('succesfully established connection with neato on ' + port)
+			TestMode(True)
+			SetLED(BacklightStatus.On, ButtonColors.Green)
+			PlaySound(Sounds.WakingUp)
+		except serial.serialutil.SerialException:
+			self.get_logger().error('could not open ' + port)
+			node.destroy_node()
+			rclpy.shutdown()
 
-        
-  
 	def odomPub(self):
 		lastTime = self.get_clock().now()
 		motors = GetMotors(leftWheel=True, rightWheel=True)
