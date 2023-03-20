@@ -25,6 +25,7 @@ class neato_node(rclpy.node.Node):
 		self.declare_parameter('max_z_speed', 0) # unlimited
 		self.declare_parameter('enable_odom', True)
 		self.declare_parameter('enable_scan', True)
+		self.declare_parameter('enable_joint', True)
   
 		self.get_logger().info('base_frame: '+ self.get_parameter('base_frame').get_parameter_value()._string_value)
 		self.get_logger().info('odom_frame: '+ self.get_parameter('odom_frame').get_parameter_value()._string_value)
@@ -36,6 +37,7 @@ class neato_node(rclpy.node.Node):
 		self.get_logger().info('max_z_speed: '+ str(self.get_parameter('max_z_speed').get_parameter_value()._double_value))
 		self.get_logger().info('enable_odom: '+ str(self.get_parameter('enable_odom').get_parameter_value().bool_value))
 		self.get_logger().info('enable_scan: '+ str(self.get_parameter('enable_scan').get_parameter_value().bool_value))
+		self.get_logger().info('enable_joint: '+ str(self.get_parameter('enable_joint').get_parameter_value().bool_value))
   
 		self.left_wheel_pos_prev = 0
 		self.right_wheel_pos_prev = 0
@@ -45,6 +47,7 @@ class neato_node(rclpy.node.Node):
 		self.moving_prev = 0
 		self.useOdom = self.get_parameter('enable_odom').get_parameter_value().bool_value
 		self.useLaser = self.get_parameter('enable_scan').get_parameter_value().bool_value
+		self.useJoint = self.get_parameter('enable_joint').get_parameter_value().bool_value
 		self.delta_left_wheel = 0
 		self.delta_right_wheel = 0
 		self.cmd_vel = None
@@ -52,6 +55,9 @@ class neato_node(rclpy.node.Node):
 		self.max_z_speed = self.get_parameter('max_z_speed').get_parameter_value()._double_value
   
 		self.start_neato()
+
+		if self.useJoint:
+			self.init_joint()
   
 		if self.useOdom:
 			self.init_odom()
@@ -62,7 +68,7 @@ class neato_node(rclpy.node.Node):
 		self.cmd_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_callback, 1)
 	
 	def init_joint(self):
-		self.wheel_pub = self.create_publisher(JointState, '/joint_states', 10)
+		self.wheel_pub = self.create_publisher(JointState, '/joint_states', 5)
  
 	def init_odom(self):
 		self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
