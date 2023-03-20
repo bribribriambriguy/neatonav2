@@ -14,10 +14,12 @@ def generate_launch_description():
     laser_frame_id = LaunchConfiguration('laser_frame')
     neato_port = LaunchConfiguration('neato_port')
     neato_wheel_track = LaunchConfiguration('wheel_track')
+    neato_wheel_radius = LaunchConfiguration('wheel_radius')
     neato_max_x = LaunchConfiguration('max_x')
     neato_max_z = LaunchConfiguration('max_z')
     enable_odom = LaunchConfiguration('enable_odom')
     enable_laser = LaunchConfiguration('enable_scan')
+    enable_joint = LaunchConfiguration('enable_wheel_joint')
     
     with open(default_model_path, 'r') as infp:
         robot_desc = infp.read()
@@ -47,6 +49,12 @@ def generate_launch_description():
         default_value = '0.240',
         description='the distance between the two wheels of the robot')
     
+    wheel_radius = DeclareLaunchArgument(
+        'wheel_radius',
+        default_value='0.0381',
+        description='the wheel radius in meters'
+    )
+    
     max_x_speed = DeclareLaunchArgument(
         'max_x',
          default_value = '0.30',
@@ -65,7 +73,13 @@ def generate_launch_description():
     use_laser = DeclareLaunchArgument(
         'enable_scan',
         default_value='True',
-        description='enable/disable scan publishing')    
+        description='enable/disable scan publishing')  
+    
+    use_joint = DeclareLaunchArgument(
+        'enable_wheel_joint',
+        default_value='True',
+        description='enable/disable live wheel joint publishing'
+    )  
     
     bringup_cmd_group = GroupAction([
         launch_ros.actions.Node(
@@ -84,10 +98,12 @@ def generate_launch_description():
                         {'laser_frame': laser_frame_id},
                         {'neato_port': neato_port},
                         {'wheel_track': neato_wheel_track},
+                        {'wheel_radius':neato_wheel_radius},
                         {'max_x_speed': neato_max_x},
                         {'max_z_speed': neato_max_z},
                         {'enable_odom': enable_odom},
-                        {'enable_scan': enable_laser}]
+                        {'enable_scan': enable_laser},
+                        {'enable_joint': enable_joint}]
         ),
     ])
     
@@ -97,10 +113,12 @@ def generate_launch_description():
     ld.add_action(laser_frame)
     ld.add_action(port)
     ld.add_action(wheel_track)
+    ld.add_action(wheel_radius)
     ld.add_action(max_x_speed)
     ld.add_action(max_z_speed)
     ld.add_action(use_odom)
     ld.add_action(use_laser)
+    ld.add_action(use_joint)
     ld.add_action(bringup_cmd_group)
 
     return ld
