@@ -4,6 +4,7 @@ from nav_msgs.msg import Odometry
 from tf2_ros.transform_broadcaster import TransformBroadcaster
 from geometry_msgs.msg import TransformStamped, Twist
 from sensor_msgs.msg import LaserScan
+from sensor_msgs.msg import JointState
 from .neato_driver import *
 import serial
 import math
@@ -18,6 +19,7 @@ class neato_node(rclpy.node.Node):
 		self.declare_parameter('odom_frame', 'odom')
 		self.declare_parameter('neato_port','/dev/ttyACM0')
 		self.declare_parameter('wheel_track', 0.240)
+		self.declare_parameter('wheel_radius', 0.0381)
 		self.declare_parameter('laser_frame','laser')
 		self.declare_parameter('max_x_speed', 0.30)
 		self.declare_parameter('max_z_speed', 0) # unlimited
@@ -29,6 +31,7 @@ class neato_node(rclpy.node.Node):
 		self.get_logger().info('laser_frame: '+ self.get_parameter('laser_frame').get_parameter_value()._string_value)
 		self.get_logger().info('neato_port: ' + self.get_parameter('neato_port').get_parameter_value()._string_value)
 		self.get_logger().info('wheel_track: '+ str(self.get_parameter('wheel_track').get_parameter_value()._double_value))
+		self.get_logger().info('wheel_radius: '+ str(self.get_parameter('wheel_radius').get_parameter_value()._double_value))
 		self.get_logger().info('max_x_speed: '+ str(self.get_parameter('max_x_speed').get_parameter_value()._double_value))
 		self.get_logger().info('max_z_speed: '+ str(self.get_parameter('max_z_speed').get_parameter_value()._double_value))
 		self.get_logger().info('enable_odom: '+ str(self.get_parameter('enable_odom').get_parameter_value().bool_value))
@@ -58,6 +61,9 @@ class neato_node(rclpy.node.Node):
    
 		self.cmd_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_callback, 1)
 	
+	def init_joint(self):
+		self.wheel_pub = self.create_publisher(JointState, '/joint_states', 10)
+ 
 	def init_odom(self):
 		self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
 		self.odom_broadcaster = TransformBroadcaster(self)
@@ -89,6 +95,7 @@ class neato_node(rclpy.node.Node):
 			rclpy.shutdown()
 
 	def odomPub(self):
+		wheel_radius = self.get_parameter('wheel_radius').get_parameter_value()._double_value
 		lastTime = self.get_clock().now()
 		motors = GetMotors(leftWheel=True, rightWheel=True)
 		left_wheel_pos = motors.get("LeftWheel_PositionInMM") / 1000.0
@@ -106,6 +113,15 @@ class neato_node(rclpy.node.Node):
 		delta_time = lastTime - self.get_clock().now() # find delta time to be used in nav_msgs/Odometry message
 		self.left_wheel_pos_prev = left_wheel_pos
 		self.right_wheel_pos_prev = right_wheel_pos
+  
+		wheel_msg = JointState()
+		wheel_msg.header.stamp = self.get_clock().now().to_msg()
+		wheel_msg.name[0] = "wheel_left_joint"
+		wheel_msg.name[1] = "wheel_right_joint"
+		wheel_msg.position[0] = left_wheel_pos/wheel_radius
+		wheel_msg.position[1] = right_wheel_pos/wheel_radius
+
+		self.wheel_pub.publish(wheel_msg)
   
 		ds = (
 			self.delta_left_wheel + self.delta_right_wheel
@@ -168,11 +184,14 @@ class neato_node(rclpy.node.Node):
 		self.max_z_speed = self.get_parameter('max_z_speed').get_parameter_value()._double_value
   
 		if self.cmd_vel: 
-			theta = self.cmd_vel.angular.z * (wheel_track / 2.0)
+			req_theta = self.cmd_vel.angular.z * (wheel_track / 2.0)
 
 			# limits requested z velocity to max z velocity
 			if self.max_z_speed: # if max_z_speed is not 0
-				theta = min(theta, self.max_z_speed) 
+				theta = min(abs(req_theta), self.max_z_speed)
+
+				if req_theta < 0:
+					theta *= -1
 			
 			dist_left = self.cmd_vel.linear.x - theta
 			dist_right = self.cmd_vel.linear.x + theta

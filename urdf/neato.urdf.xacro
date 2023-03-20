@@ -90,7 +90,7 @@
             </collision>
         </link>
 
-        <joint name="wheel_${prefix}_joint" type="fixed">
+        <joint name="wheel_${prefix}_joint" type="continuous">
             <axis xyz="0 1 0" rpy="0 0 0" />
             <parent link="base_link" />
             <child link="wheel_${prefix}" />

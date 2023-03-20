@@ -67,7 +67,7 @@
       </geometry>
     </collision>
   </link>
-  <joint name="wheel_left_joint" type="fixed">
+  <joint name="wheel_left_joint" type="continuous">
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <parent link="base_link"/>
     <child link="wheel_left"/>
@@ -88,7 +88,7 @@
       </geometry>
     </collision>
   </link>
-  <joint name="wheel_right_joint" type="fixed">
+  <joint name="wheel_right_joint" type="continuous">
     <axis rpy="0 0 0" xyz="0 1 0"/>
     <parent link="base_link"/>
     <child link="wheel_right"/>
