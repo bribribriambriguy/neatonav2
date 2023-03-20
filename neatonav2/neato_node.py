@@ -66,16 +66,21 @@ class neato_node(rclpy.node.Node):
 			self.init_laser()
    
 		self.cmd_sub = self.create_subscription(Twist, '/cmd_vel', self.cmd_callback, 1)
-	
-	def init_joint(self):
-		self.wheel_pub = self.create_publisher(JointState, '/joint_states', 5)
  
+	def init_joint(self):
+		self.wheel_pub = self.create_publisher(JointState, '/joint_states', 1)
+		self.wheel_msg = JointState()
+		self.wheel_msg.name.append("wheel_left_joint")
+		self.wheel_msg.name.append("wheel_right_joint")
+		self.wheel_msg.position.append(0.0)
+		self.wheel_msg.position.append(0.0)
+
 	def init_odom(self):
-		self.odom_pub = self.create_publisher(Odometry, '/odom', 10)
+		self.odom_pub = self.create_publisher(Odometry, '/odom', 1)
 		self.odom_broadcaster = TransformBroadcaster(self)
   
 	def init_laser(self):
-		self.laser_pub = self.create_publisher(LaserScan, '/scan', 10)
+		self.laser_pub = self.create_publisher(LaserScan, '/scan', 1)
 		SetLDSRotation(True)
   
 		self.scan = LaserScan()
@@ -121,14 +126,13 @@ class neato_node(rclpy.node.Node):
 		self.right_wheel_pos_prev = right_wheel_pos
   
 		if self.useJoint:	
-			wheel_msg = JointState()
-			wheel_msg.header.stamp = self.get_clock().now().to_msg()
-			wheel_msg.name[0] = "wheel_left_joint"
-			wheel_msg.name[1] = "wheel_right_joint"
-			wheel_msg.position[0] = left_wheel_pos/wheel_radius
-			wheel_msg.position[1] = right_wheel_pos/wheel_radius
+			self.wheel_msg.header.stamp = self.get_clock().now().to_msg()
+			if left_wheel_pos != 0:
+				self.wheel_msg.position[0] = left_wheel_pos/wheel_radius
+			if right_wheel_pos != 0:
+				self.wheel_msg.position[1] = right_wheel_pos/wheel_radius
 
-		self.wheel_pub.publish(wheel_msg)
+			self.wheel_pub.publish(self.wheel_msg)
   
 		ds = (
 			self.delta_left_wheel + self.delta_right_wheel
@@ -195,13 +199,13 @@ class neato_node(rclpy.node.Node):
 
 			# limits requested z velocity to max z velocity
 			if self.max_z_speed: # if max_z_speed is not 0
-				theta = min(abs(req_theta), self.max_z_speed)
+				req_theta = min(abs(req_theta), self.max_z_speed)
 
 				if req_theta < 0:
-					theta *= -1
+					req_theta *= -1
 			
-			dist_left = self.cmd_vel.linear.x - theta
-			dist_right = self.cmd_vel.linear.x + theta
+			dist_left = self.cmd_vel.linear.x - req_theta
+			dist_right = self.cmd_vel.linear.x + req_theta
 			req_velocity = abs(max(dist_left, dist_right))
 			drive_vel = min(req_velocity, 0.3)  # .3 m/s is the max allowed by neato api
 

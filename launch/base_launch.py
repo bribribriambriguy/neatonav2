@@ -90,11 +90,6 @@ def generate_launch_description():
             output='both'
         ),
         
-        launch_ros.actions.Node(
-            condition=IfCondition(enable_joint),
-            package='joint_state_publisher',
-            executable='joint_state_publisher',
-        ),
     
         launch_ros.actions.Node(
             package='neatonav2',
