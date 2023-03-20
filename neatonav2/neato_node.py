@@ -120,12 +120,13 @@ class neato_node(rclpy.node.Node):
 		self.left_wheel_pos_prev = left_wheel_pos
 		self.right_wheel_pos_prev = right_wheel_pos
   
-		wheel_msg = JointState()
-		wheel_msg.header.stamp = self.get_clock().now().to_msg()
-		wheel_msg.name[0] = "wheel_left_joint"
-		wheel_msg.name[1] = "wheel_right_joint"
-		wheel_msg.position[0] = left_wheel_pos/wheel_radius
-		wheel_msg.position[1] = right_wheel_pos/wheel_radius
+		if self.useJoint:	
+			wheel_msg = JointState()
+			wheel_msg.header.stamp = self.get_clock().now().to_msg()
+			wheel_msg.name[0] = "wheel_left_joint"
+			wheel_msg.name[1] = "wheel_right_joint"
+			wheel_msg.position[0] = left_wheel_pos/wheel_radius
+			wheel_msg.position[1] = right_wheel_pos/wheel_radius
 
 		self.wheel_pub.publish(wheel_msg)
   
