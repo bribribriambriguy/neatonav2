@@ -2,6 +2,7 @@ import launch
 from launch.substitutions import Command, LaunchConfiguration
 from launch.actions import (DeclareLaunchArgument, GroupAction,
                             IncludeLaunchDescription, SetEnvironmentVariable)
+from launch.conditions import IfCondition
 from launch import LaunchDescription
 import launch_ros
 import os
@@ -87,6 +88,12 @@ def generate_launch_description():
             executable='robot_state_publisher',
             parameters=[{'robot_description': robot_desc}],
             output='both'
+        ),
+        
+        launch_ros.actions.Node(
+            condition=IfCondition(enable_joint),
+            package='joint_state_publisher',
+            executable='joint_state_publisher',
         ),
     
         launch_ros.actions.Node(
