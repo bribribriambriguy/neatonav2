@@ -42,7 +42,11 @@ def generate_launch_description():
     
     bringup_cmd_group = GroupAction([  
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'map_launch.py')),),                             
+            PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'map_launch.py')),
+            launch_arguments={
+                'map_path_backup': map_path
+            }.items()
+            ),                             
                                           
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(bringup_dir, 'launch', 'bringup_launch.py')),
