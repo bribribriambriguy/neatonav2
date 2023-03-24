@@ -31,20 +31,7 @@ def generate_launch_description():
     map_yaml_path = DeclareLaunchArgument(
         'map_path',
         default_value=os.path.join(pkg_share, 'map', 'map_save.yaml'),
-        description='path for .rviz file')
-
-
-    navigation = IncludeLaunchDescription(
-      PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('nav2_bringup'), 'launch'),
-         '/navigation_launch.py']),
-      launch_arguments={'params': nav_config_path}.items()
-      )
-    localization = IncludeLaunchDescription(
-      PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('neatonav2'), 'launch'),
-         '/localization_launch.py'])
-      )
+        description='path for map file')
     
     rviz = launch_ros.actions.Node(
         package='rviz2',
@@ -53,11 +40,14 @@ def generate_launch_description():
         arguments=['-d', rviz_config_path]
     )
     
-    bringup_cmd_group = GroupAction([
+    bringup_cmd_group = GroupAction([  
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'map_launch.py')),),                             
+                                          
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(os.path.join(bringup_dir, 'launch', 'bringup_launch.py')),
             launch_arguments={'namespace': 'neato',
-                              'use_namespace': 'true',
+                              'use_namespace': 'False',
                               'map': map_path,
                               'params_file': nav_config_path}.items()),
         
