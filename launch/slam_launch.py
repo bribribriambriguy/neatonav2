@@ -25,9 +25,16 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         arguments=['-d', rviz_config_path]
+    )
+
+    robot_steering = launch_ros.actions.Node(
+        package='rqt_robot_steering',
+        executable='rqt_robot_steering',
+        name='robot_steering',
     )   
 
     return LaunchDescription([
+      robot_steering,
       slam,
       rviz
    ])
