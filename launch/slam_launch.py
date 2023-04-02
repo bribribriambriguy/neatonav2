@@ -19,11 +19,6 @@ def generate_launch_description():
          '/online_async_launch.py']),
       launch_arguments=[{'params': slam_config_path},{'use_sim_time': False}]
       )
-    neato = IncludeLaunchDescription(
-      PythonLaunchDescriptionSource([os.path.join(
-         get_package_share_directory('neatonav2'), 'launch'),
-         '/base_launch.py'])
-      )
     
     rviz = launch_ros.actions.Node(
         package='rviz2',
@@ -33,7 +28,6 @@ def generate_launch_description():
     )   
 
     return LaunchDescription([
-      neato,
       slam,
       rviz
    ])
