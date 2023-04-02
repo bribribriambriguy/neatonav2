@@ -4,6 +4,7 @@ A driver for the neato robot vacuum (Tested on ROS2 foxy)
 This package includes a driver and launch file for slam using the slam_toolbox package and navigation using the nav_bringup package
 
 Prerequistes:
+
 Neato with USB control capabilities
 A USB cable that properly conects to the neato
 Ubuntu 20.04 or 22.04 installed
