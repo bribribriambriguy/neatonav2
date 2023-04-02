@@ -30,37 +30,38 @@ def generate_launch_description():
     
     map_yaml_path = DeclareLaunchArgument(
         'map_path',
-        default_value=os.path.join(pkg_share, 'map', 'map_save.yaml'),
+        default_value=os.path.join(pkg_share, "map", "map_save.yaml"),
         description='path for map file')
-    
-    rviz = launch_ros.actions.Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        arguments=['-d', rviz_config_path]
-    )
-                                                                          
-    nav2_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(bringup_dir, 'launch', 'bringup_launch.py')),
-        launch_arguments={
-                            'map': LaunchConfiguration("map_path"),
-                            'use_sim_time': 'False',
-                            'params_file': LaunchConfiguration("nav_params")
-                        }.items()
-    )
+    bringup_cmd_group = GroupAction ([                                                                     
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(bringup_dir, 'launch', 'bringup_launch.py')),
+            launch_arguments={
+                'map': 'map_launch.yaml',
+                "use_sim_time": "False",
+                "params_file": nav_config_path
+            }.items(),
+        ),
+
+        # backup map_server because map_server run by bringup_launch.py was not working
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'map_launch.py')),
+            launch_arguments={
+                'map_path_backup': map_path
+            }.items(),
+        ),
         
-    rviz = launch_ros.actions.Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        arguments=['-d', rviz_config_path]
-    )   
+        launch_ros.actions.Node(
+            package='rviz2',
+            executable='rviz2',
+            name='rviz2',
+            arguments=['-d', rviz_config_path]
+        ),
+    ])     
 
     ld = LaunchDescription()
     ld.add_action(nav_yaml_params)
     ld.add_action(map_yaml_path)
     ld.add_action(rviz_path)
-    ld.add_action(nav2_launch)
-    ld.add_action(rviz)
+    ld.add_action(bringup_cmd_group)
     
     return ld
