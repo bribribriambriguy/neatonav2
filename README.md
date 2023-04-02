@@ -1,6 +1,8 @@
 # neatonav2
 A driver for the neato robot vacuum (Tested on ROS2 foxy)
 
+please read raw
+
 This package includes a driver and launch file for slam using the slam_toolbox package and navigation using the nav_bringup package
 
 Prerequistes:
