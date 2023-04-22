@@ -17,7 +17,12 @@ def generate_launch_description():
       PythonLaunchDescriptionSource([os.path.join(
          get_package_share_directory('slam_toolbox'), 'launch'),
          '/online_async_launch.py']),
+<<<<<<< HEAD:launch/slam_launch.py
+      launch_arguments=[{'params': slam_config_path,
+                         'use_sim_time': False}]
+=======
       launch_arguments=[{'params': slam_config_path},{'use_sim_time': False}]
+>>>>>>> 2e4406c16f2edd9e360f045f9bc9a809b1dfb179:neatonav2/launch/slam_launch.py
       )
     
     rviz = launch_ros.actions.Node(
@@ -34,7 +39,10 @@ def generate_launch_description():
     )   
 
     return LaunchDescription([
+<<<<<<< HEAD:launch/slam_launch.py
+=======
       robot_steering,
+>>>>>>> 2e4406c16f2edd9e360f045f9bc9a809b1dfb179:neatonav2/launch/slam_launch.py
       slam,
       rviz
    ])
