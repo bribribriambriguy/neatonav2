@@ -79,14 +79,14 @@ class neato_node(rclpy.node.Node):
         self.wheel_msg.position.append(0.0)
 
     def init_lidar_service(self) :
-        self.lidar_srv = self.create_service(LidarOnOff, 'neato_node/lidar_on_off', self.lidar_srv_callback)   
+        self.lidar_srv = self.create_service(LidarOnOff, 'neato_node/lidar_on_off', self.lidar_srv_callback, qos_profile=rclpy.qos.qos_profile_services_default)   
 
     def init_odom(self):
         self.odom_pub = self.create_publisher(Odometry, '/odom', 1)
         self.odom_broadcaster = TransformBroadcaster(self)
   
     def init_laser(self):
-        self.laser_pub = self.create_publisher(LaserScan, '/scan', 1)
+        self.laser_pub = self.create_publisher(LaserScan, '/scan', rclpy.qos.qos_profile_sensor_data)
         SetLDSRotation(True)
   
         self.scan = LaserScan()
