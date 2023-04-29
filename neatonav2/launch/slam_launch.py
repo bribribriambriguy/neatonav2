@@ -17,8 +17,8 @@ def generate_launch_description():
       PythonLaunchDescriptionSource([os.path.join(
          get_package_share_directory('slam_toolbox'), 'launch'),
          '/online_async_launch.py']),
-      launch_arguments=[{'params': slam_config_path,
-                         'use_sim_time': False}]
+      launch_arguments={'params': slam_config_path,
+                         'use_sim_time': 'False'}.items()
       )
     
     rviz = launch_ros.actions.Node(
