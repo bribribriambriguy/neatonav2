@@ -1,0 +1,25 @@
+
+*** These modified files were found in JOE when it aborted on Sat Apr 29 16:36:24 2023
+*** JOE was aborted by UNIX signal 1
+
+*** File '/home/brian/neato_ws/src/neatonav2/.git/MERGE_MSG'
+Merge branch 'master' into foxy-devel yay
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
+
+*** File '(Unnamed)'
+q
+quit
+
+*** File '(Unnamed)'
+file.txt
+/home/brian/neato_ws/src/neatonav2/.git/MERGE_MSG
+
+*** File '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
