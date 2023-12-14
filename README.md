@@ -1,5 +1,5 @@
 # neatonav2
-A driver for the neato robot vacuum (Tested on ROS2 foxy)
+A driver for the neato robot vacuum (Tested on ROS2 foxy, most likely works on a lot of other ros2 distros but can not confirm)
 
 please read raw
 
@@ -8,32 +8,52 @@ This package includes a driver and launch file for slam using the slam_toolbox p
 Prerequistes:
 
 Neato with USB control capabilities
+
 A USB cable that properly conects to the neato
+
 Ubuntu 20.04 or 22.04 installed
+
 ROS2 Foxy (20.04) or ROS2 Humble (recomended due to some issue with nav2) (22.04) installed
+
 foxy install: https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html
+
 humble install: ttps://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html
 
 Package Install:
+
 mkdir -p ~/neato_ws/src
+
 cd ~/neato_ws/src
+
 git clone https://github.com/bribribriambriguy/neatonav2.git -b <ros-distro>-devel
+
 cd ..
+
 colcon build
 
 Use:
+
 Connect to neato with USB cable
+
 cd ~/neato_ws
+
 source install/setup.bash
+
 Know what port the neato is on ex. /dev/ttyACM0
 
+run sudo chmod 666 /dev/<your_port_here> so you can give file permissions to neato usb port
+
+
 Run Driver:
+
 ros2 launch neatonav2 base_launch.py neato_port:=<your_port> (default /dev/ttyACM0)
 
 Run SLAM:
+
 ros2 launch neatonav2 slam_launch.py
 
 Run Nav2 stack:
+
 ros2 launch neatonav2 nav_launch.py
 
 ps. slam_launch.py and nav_launch.py do not include base_launch.py because it is assumed that the base_launch.py will be run on a 
@@ -41,6 +61,7 @@ computer on the robot and slam_launch.py and nav_launch.py are assumed to be run
 or nav_launch.py must be run separately
 
 Info for people who want to have a computer on robot:
+
 You can either run everything on the computer on the robot, or you can have a computer in the robot that just runs the base_launch.py
 and a remote computer that handles SLAM and nav2
 
